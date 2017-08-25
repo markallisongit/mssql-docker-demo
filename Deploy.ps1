@@ -7,6 +7,7 @@ $Instance = "$($config.DockerHost),$ContainerPort"
 $RemoteDrive = 'C'
 $RemoteDirectory = 'Temp'
 $FileToCopy = "ContainerInfo.json"
+$ContainerName = $ContainerInfo.ContainerName
 
 # copy a file to the docker host
 try {
