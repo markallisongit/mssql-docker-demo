@@ -31,7 +31,7 @@ do {
     try {
         $ServerName = (Invoke-Sqlcmd -ServerInstance $Instance -User sa -Password $config.SaPassword -Query "select @@SERVERNAME ServerName").ServerName
     }
-        catch [System.Data.SqlClient.SqlException]
+    catch [System.Data.SqlClient.SqlException]
     {
         Write-Information "."
         continue
