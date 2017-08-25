@@ -3,11 +3,13 @@ param ()
 $config = Get-Content .\config.json -Raw -Encoding UTF8 | ConvertFrom-Json
 $ContainerInfo = Get-Content .\ContainerInfo.json -raw -Encoding UTF8 | ConvertFrom-Json
 $SaPassword=$config.SaPassword
-$Instance = "$($config.DockerHost),$ContainerPort"
+$Instance = "$($config.DockerHost),$($ContainerInfo.ContainerPort)"
 $RemoteDrive = 'C'
 $RemoteDirectory = 'Temp'
 $FileToCopy = "ContainerInfo.json"
 $ContainerName = $ContainerInfo.ContainerName
+
+Write-Verbose "Deploying to $ContainerName on Port $($config.ContainerPort)"
 
 # copy a file to the docker host
 try {
