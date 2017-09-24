@@ -1,5 +1,7 @@
 {
-    "DockerHost": "foxglove",
-    "SaPassword": "4alQUEOxzRreW9E8LmiO",    
-    "MSSQLPort": 50000
+    "DockerHost": "neon.localdomain",
+    "SaPassword": "edU*9Fqd2dFr!TrGr6Ds",    
+    "MSSQLPort": 50000,
+    "KeyFilePath": "C:\\Users\\mark\\Documents\\ssh\\mark.allison@sabin.io-openssh-privkey.ppk",
+    "DockerUserName": "root"
 }
