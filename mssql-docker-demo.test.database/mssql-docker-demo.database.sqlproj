@@ -61,4 +61,7 @@
   <ItemGroup>
     <Build Include="ATable.sql" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="mssql-docker-demo.database.publish.xml" />
+  </ItemGroup>
 </Project>
