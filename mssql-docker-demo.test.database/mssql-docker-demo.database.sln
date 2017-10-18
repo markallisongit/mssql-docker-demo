@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "single-pipeline-demo", "single-pipeline-demo.sqlproj", "{028E5EB0-1789-484C-ABF6-CC0FA68DEC59}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "mssql-docker-demo.test.database", "mssql-docker-demo.database.sqlproj", "{028E5EB0-1789-484C-ABF6-CC0FA68DEC59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

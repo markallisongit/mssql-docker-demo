@@ -1,3 +1,4 @@
+# Set-Location C:\Repos\mssql-docker-demo
 [cmdletbinding()]
 param ()
 $InformationPreference = 'Continue'
