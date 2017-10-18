@@ -1,45 +1,63 @@
-[cmdletbinding()]
-param ()
+Function New-WindowsMssqlContainer
+{
+<#
+.SYNOPSIS 
+Creates a SQL Server 2017 container on  Windows
 
-$config = Get-Content .\config.json -Raw -Encoding UTF8 | ConvertFrom-Json
+.DESCRIPTION
+Creates a new container on Windows. The Windows machine must be Windows Server 2016 or later with the Container services installed.
 
-[int]$ContainerPort = $config.MSSQLPort
-Write-Information "Start range for port scan: $($config.MSSQLPort)"
-do {
-    Write-Verbose "Checking if port $ContainerPort in use..."
-    $InUse = (Test-NetConnection -ComputerName $config.DockerHost -Port $ContainerPort).TcpTestSucceeded
-    if($InUse) {
-        $ContainerPort++
-    }    
-}
-until ($InUse -eq $false)
+.PARAMETER DockerHost
+The name of the container host server
 
-$ContainerName = "mssql-$($env:BRANCH_NAME)-$ContainerPort"
-$SaPassword=$config.SaPassword
-$dockerCmd = "docker run -d -p $($ContainerPort):1433 -e sa_password=$SaPassword -e ACCEPT_EULA=Y --name $ContainerName microsoft/mssql-server-windows-developer"
+.PARAMETER SaPassword
+The password for the sa account. Must be complex.
 
-Write-Information "Creating container: $ContainerName on port $ContainerPort"
-Invoke-Command -ComputerName $config.DockerHost  -ScriptBlock { & cmd.exe /c $using:dockerCmd } 
+.PARAMETER StartPortRange
+The starting port number to scan from to look for an unused port for the MSSQL Service.
 
-$Instance = "$($config.DockerHost),$ContainerPort"
+.PARAMETER Verbose
+Shows details of the build, if omitted minimal information is output.
 
-Import-Module SqlServer
-Write-Information "Logging in to $Instance."
-$ServerName = $null
-do {
-    Start-Sleep -s 1
-    try {
-        $ServerName = (Invoke-Sqlcmd -ServerInstance $Instance -User sa -Password $config.SaPassword -Query "select @@SERVERNAME ServerName").ServerName
-    }
-    catch [System.Data.SqlClient.SqlException]
+.NOTES
+Author: Mark Allison
+
+.EXAMPLE   
+
+#>
+    [cmdletbinding()]
+    param (
+        [Parameter(Mandatory=$true,Position=0)][string]$DockerHost,
+        [Parameter(Mandatory=$true,Position=1)][string]$SaPassword,
+        [Parameter(Mandatory=$true)][int]$StartPortRange
+    )
+    Process
     {
-        Write-Information "."
-        continue
-    }
-}   
-until
-    ([string]::IsNullOrEmpty($ServerName) -eq $false)
-Write-Information "Logged in! ServerName returned: $ServerName. Container ready."
+        $ContainerPort = $StartPortRange
+        Write-Information "Start range for port scan: $StartPortRange"
+        do {
+            Write-Verbose "Checking if port $ContainerPort is in use..."
+            $InUse = (Test-NetConnection -ComputerName $DockerHost -Port $ContainerPort).TcpTestSucceeded
+            if($InUse) {
+                $ContainerPort++
+            }    
+        }
+        until ($InUse -eq $false)
 
-# write out the config for other scripts to read in later
-@{"ContainerPort" = $ContainerPort;"ContainerName" = $ContainerName;} | ConvertTo-Json | Out-File -FilePath 'ContainerInfo.json' -Encoding UTF8
+        $ContainerName = "mssql-$ContainerPort"
+        $dockerCmd = "docker run -d -p $($ContainerPort):1433 -e sa_password=$SaPassword -e ACCEPT_EULA=Y --name $ContainerName microsoft/mssql-server-windows-developer"
+
+        Write-Information "Creating container: $ContainerName on port $ContainerPort"
+        Invoke-Command -ComputerName $DockerHost -ScriptBlock { & cmd.exe /c $using:dockerCmd } 
+
+        $Instance = "$($DockerHost),$ContainerPort"
+
+        $ServerName = Confirm-MssqlConnection -Instance $Instance -SaPassword $SaPassword
+
+        Write-Information "Logged in! ServerName returned: $ServerName. Container ready."
+
+        # return the config
+        return @{"ContainerPort" = $ContainerPort;"ContainerName" = $ContainerName;}
+        
+    }
+}

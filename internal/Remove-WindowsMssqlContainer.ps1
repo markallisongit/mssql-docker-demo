@@ -1,15 +1,34 @@
-# Set-Location C:\Repos\mssql-docker-demo
-[cmdletbinding()]
-param ()
-$InformationPreference = 'Continue'
+Function Remove-WindowsMssqlContainer
+{
+<#
+.SYNOPSIS 
+Removes a SQL Server 2017 container on  Windows
 
-$dockerHost = (Get-Content .\config.json -Raw -Encoding UTF8 | ConvertFrom-Json).DockerHost
-$ContainerName = (Get-Content .\ContainerInfo.json -raw -Encoding UTF8 | ConvertFrom-Json).ContainerName
+.DESCRIPTION
+Removes a new container on Windows. The container can be running or stopped.
 
-Write-Information "Stopping container $ContainerName"
-$dockerStop = "docker stop $ContainerName"
-Invoke-Command -ComputerName $dockerHost -ScriptBlock { & cmd.exe /c $using:dockerStop }
+.PARAMETER DockerHost
+The name of the container host server
 
-Write-Information "Removing container $ContainerName"
-$dockerRemove = "docker rm $ContainerName"
-Invoke-Command -ComputerName $dockerHost -ScriptBlock { & cmd.exe /c $using:dockerRemove }
+.PARAMETER ContainerName
+The name of the container
+
+.NOTES
+Author: Mark Allison
+
+.EXAMPLE   
+
+#>
+
+    [cmdletbinding()]
+    param (
+        [Parameter(Mandatory=$true,Position=0)][string]$DockerHost,
+        [Parameter(Mandatory=$true,Position=1)][string]$ContainerName
+    )
+    Process
+    {
+        Write-Information "Removing container $ContainerName"
+        $dockerRemove = "docker rm -f $ContainerName"
+        Invoke-Command -ComputerName $DockerHost -ScriptBlock { & cmd.exe /c $using:dockerRemove }
+    }
+}

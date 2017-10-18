@@ -33,7 +33,7 @@ Copyright = '(c) 2017 Mark Allison'
 Description = 'Demonstrates different ways of creating MSSQL Docker containers on Windows and Linux'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '4.0'
 
 # Name of the Windows PowerShell host required by this module
 PowerShellHostName = ''

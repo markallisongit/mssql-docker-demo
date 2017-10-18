@@ -1,3 +1,30 @@
+Function Publish-MssqlDatabaseToContainer
+{
+<#
+.SYNOPSIS 
+Creates a SQL Server 2017 container on  Windows
+
+.DESCRIPTION
+Creates a new container on Windows. The Windows machine must be Windows Server 2016 or later with the Container services installed.
+
+.PARAMETER DockerHost
+The name of the container host server
+
+.PARAMETER SaPassword
+The password for the sa account. Must be complex.
+
+.PARAMETER StartPortRange
+The starting port number to scan from to look for an unused port for the MSSQL Service.
+
+.PARAMETER Verbose
+Shows details of the build, if omitted minimal information is output.
+
+.NOTES
+Author: Mark Allison
+
+.EXAMPLE   
+
+#>
 [cmdletbinding()]
 param ()
 $config = Get-Content .\config.json -Raw -Encoding UTF8 | ConvertFrom-Json
@@ -30,3 +57,4 @@ finally {
     Get-PSSession -ComputerName $config.DockerHost | Remove-PSSession
 }
 & $env:SQLPACKAGE /Action:Publish /SourceFile:bin\Debug\single-pipeline-demo.dacpac /TargetServerName:$Instance /TargetDatabaseName:single-pipeline-demo /TargetUser:sa /TargetPassword:$SaPassword
+}
