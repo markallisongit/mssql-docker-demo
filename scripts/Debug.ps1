@@ -12,23 +12,23 @@ $output = New-MssqlContainer -DockerHost $DockerHost -SaPassword $SaPassword -Co
 
 $output.ContainerPort
 
-Remove-WindowsMssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000'
+Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50003' -ContainerType Windows
 Invoke-Command -ComputerName $DockerHost {& docker ps -a}
 
 
 # Linux
 cls
-Import-Module .\mssql-docker-demo.psm1 -Force
+Import-Module .\mssql-docker-demo.psd1 -Force
 $DockerHost = 'neon.localdomain'
 $SaPassword = 'edU*9Fqd2dFr!TrGr6Ds'
 $KeyFilePath = 'C:\Users\mark\Documents\ssh\mark.allison@sabin.io-openssh-privkey.ppk'
 $DockerUserName = 'root'
 
 $InformationPreference='Continue'
-$VerbosePreference='SilentlyContinue'
+$VerbosePreference='Continue'
 
 $output = New-MssqlContainer -DockerHost $DockerHost -SaPassword $SaPassword -ContainerType Linux -KeyFilePath $KeyFilePath -DockerUserName $DockerUserName
 $output
-Remove-LinuxMssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000' -KeyFilePath $KeyFilePath -DockerUserName $DockerUserName
+Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000' -ContainerType Linux -KeyFilePath $KeyFilePath -DockerUserName $DockerUserName
 
 invoke-pester
