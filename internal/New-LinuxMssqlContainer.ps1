@@ -2,10 +2,10 @@
 {
 <#
 .SYNOPSIS 
-Creates a SQL Server 2017 container on  Windows
+Creates a SQL Server 2017 container on Linux
 
 .DESCRIPTION
-Creates a new container on Windows. The Windows machine must be Windows Server 2016 or later with the Container services installed.
+Creates a new container on Linux. The Linux machine must have the latest version of docker installed and have ssh keys set up.
 
 .PARAMETER DockerHost
 The name of the container host server
@@ -21,9 +21,6 @@ The path to the private ssh key
 
 .PARAMETER DockerUserName
 The name of the docker user name for linux hosts, usually 'root'.
-
-.PARAMETER Verbose
-Shows details of the build, if omitted minimal information is output.
 
 .NOTES
 Author: Mark Allison

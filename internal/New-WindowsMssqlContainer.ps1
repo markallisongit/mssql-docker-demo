@@ -16,9 +16,6 @@ The password for the sa account. Must be complex.
 .PARAMETER StartPortRange
 The starting port number to scan from to look for an unused port for the MSSQL Service.
 
-.PARAMETER Verbose
-Shows details of the build, if omitted minimal information is output.
-
 .NOTES
 Author: Mark Allison
 

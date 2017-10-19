@@ -2,10 +2,10 @@ Function Confirm-MssqlConnection
 {
 <#
 .SYNOPSIS 
-Creates a SQL Server 2017 container on  Windows
+Connects to a Sql Server and makes sure a query can be run
 
 .DESCRIPTION
-Creates a new container on Windows. The Windows machine must be Windows Server 2016 or later with the Container services installed.
+Runs SELECT @@SERVERNAME against the instance.
 
 .PARAMETER Instance
 The Sql Server instance name with port number.
