@@ -1,15 +1,33 @@
-$config = Get-Content .\config.json -raw -Encoding UTF8 | ConvertFrom-Json
-$ContainerPort = (Get-Content .\ContainerInfo.json -raw -Encoding UTF8 | ConvertFrom-Json).ContainerPort
-$Instance = "$($config.DockerHost),$ContainerPort"
-Import-Module SqlServer
-Describe "Deploy tests" -Tags 'Public' {
+$moduleRoot = Split-Path $PSScriptRoot
+$module = 'mssql-docker-demo'
+Get-Module $module | Remove-Module -Force
+Import-Module "$moduleRoot\$module.psm1" -Force
+$sut = (Split-Path $moduleRoot) -replace '.Tests\.', '.'
 
-    It 'Deploys' {
+$config = Get-Content "$PSScriptRoot\test.config.json" -raw -Encoding UTF8 | ConvertFrom-Json
+
+
+# Import-Module SqlServer
+Describe "Container tests" -Tags 'Public' {
+
+    It 'Create Windows Container' {
+        $output = New-MssqlContainer -DockerHost $config.WindowsDockerHost -SaPassword $config.SaPassword -ContainerType Windows
+        [int]$output.ContainerPort | Should BeGreaterThan [int]$config.StartPortRange
+
+    }
+
+    It 'Create Linux Container' {
+        $output = New-MssqlContainer -DockerHost $config.LinuxDockerHost -SaPassword $config.SaPassword -ContainerType Linux -KeyFilePath $config.KeyFilePath -DockerUserName $config.DockerUserName
+        [int]$output.ContainerPort | Should BeGreaterThan [int]$config.StartPortRange
+
+    }    
+
+<#     It 'Deploys to Windows' {
         $tableExists = (Invoke-Sqlcmd -ServerInstance $Instance -User sa -Password $config.SaPassword -Database "single-pipeline-demo" -Query "select count(*) [count] from sys.tables where name = 'ATable'").count
         $tableExists | Should Be 1
-    }
+    } #>
+}
 
-    It 'Copied a file into the container' {
-        # can't work out how to get STDOUT from the container at the mo
-    }
+Describe "Deploy tests" -Tags 'Public' {
+
 }

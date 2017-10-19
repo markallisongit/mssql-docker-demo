@@ -26,7 +26,9 @@ Author: Mark Allison
 
 #>
 [cmdletbinding()]
-param ()
+param (
+    
+)
 $config = Get-Content .\config.json -Raw -Encoding UTF8 | ConvertFrom-Json
 $ContainerInfo = Get-Content .\ContainerInfo.json -raw -Encoding UTF8 | ConvertFrom-Json
 $SaPassword=$config.SaPassword

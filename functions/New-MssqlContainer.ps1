@@ -41,12 +41,13 @@ Author: Mark Allison
         [Parameter(Mandatory=$true,Position=1)][string]$SaPassword,
         [Parameter(Mandatory=$true,Position=2)][ValidateSet('Windows','Linux','Azure')][string]$ContainerType,
         [Parameter(Mandatory=$false)][int]$StartPortRange=50000,
-        [Parameter(Mandatory=$false,ParameterSetName='Linux')][string]$KeyFilePath,
-        [Parameter(Mandatory=$false,ParameterSetName='Linux')][string]$DockerUserName
+        [Parameter(Mandatory=$false)][string]$KeyFilePath,
+        [Parameter(Mandatory=$false)][string]$DockerUserName
 
     )
     Process
     {
+        $output=$null
         switch ($ContainerType)
         {
             'Windows' {

@@ -37,7 +37,7 @@ Author: Mark Allison
         Write-Information "Start range for port scan: $StartPortRange"
         do {
             Write-Verbose "Checking if port $ContainerPort is in use..."
-            $InUse = (Test-NetConnection -ComputerName $DockerHost -Port $ContainerPort).TcpTestSucceeded
+            $InUse = (Test-NetConnection -ComputerName $DockerHost -Port $ContainerPort -WarningAction 'SilentlyContinue').TcpTestSucceeded
             if($InUse) {
                 $ContainerPort++
             }    
@@ -48,7 +48,7 @@ Author: Mark Allison
         $dockerCmd = "docker run -d -p $($ContainerPort):1433 -e sa_password=$SaPassword -e ACCEPT_EULA=Y --name $ContainerName microsoft/mssql-server-windows-developer"
 
         Write-Information "Creating container: $ContainerName on port $ContainerPort"
-        Invoke-Command -ComputerName $DockerHost -ScriptBlock { & cmd.exe /c $using:dockerCmd } 
+        $ContainerId = Invoke-Command -ComputerName $DockerHost -ScriptBlock { & cmd.exe /c $using:dockerCmd } 
 
         $Instance = "$($DockerHost),$ContainerPort"
 
@@ -56,8 +56,11 @@ Author: Mark Allison
 
         Write-Information "Logged in! ServerName returned: $ServerName. Container ready."
 
-        # return the config
-        return @{"ContainerPort" = $ContainerPort;"ContainerName" = $ContainerName;}
-        
+        # return the output
+        return @{
+            "ContainerPort" = $ContainerPort;
+            "ContainerName" = $ContainerName;
+            "ContainerId" = $ContainerId;
+        }        
     }
 }
