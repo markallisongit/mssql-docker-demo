@@ -1,7 +1,7 @@
 {
     "LinuxDockerHost": "neon.localdomain",
     "WindowsDockerHost": "foxglove.duck.loc",
-    "SaPassword": "edU*9Fqd2dFr!TrGr6Ds",    
+    "SaPassword": "edU9Fqd2dFr!TrGr6Ds",    
     "StartPortRange": 50000,
     "KeyFilePath": "C:\\Users\\mark\\Documents\\ssh\\mark.allison@sabin.io-openssh-privkey.ppk",
     "DockerUserName": "root"

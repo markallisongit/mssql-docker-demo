@@ -6,14 +6,15 @@ Import-Module .\mssql-docker-demo.psm1 -Force
 $InformationPreference='SilentlyContinue'
 $VerbosePreference='SilentlyContinue'
 
-$DockerHost = 'foxglove.duck.loc'
-$SaPassword = 'edU*9Fqd2dFr!TrGr6Ds'
-$output = New-MssqlContainer -DockerHost $DockerHost -SaPassword $SaPassword -ContainerType Windows
+$config = Get-Content ".\tests\test.config.json" -raw -Encoding UTF8 | ConvertFrom-Json
+$output = New-MssqlContainer -DockerHost $config.WindowsDockerHost -SaPassword $config.SaPassword -ContainerType Windows
 
 $output.ContainerPort
 
-Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000' -ContainerType Windows
+Remove-MssqlContainer -DockerHost $DockerHost -ContainerName $output.ContainerName -ContainerType Windows
 Invoke-Command -ComputerName $DockerHost {& docker ps -a}
+
+50000..50001 | % { Remove-MssqlContainer -DockerHost $DockerHost -ContainerName "mssql-$_" -ContainerType Windows }
 
 
 # Linux
@@ -31,4 +32,6 @@ $output = New-MssqlContainer -DockerHost $DockerHost -SaPassword $SaPassword -Co
 $output
 Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000' -ContainerType Linux -KeyFilePath $KeyFilePath -DockerUserName $DockerUserName
 
-invoke-pester
+Publish-MssqlDatabaseToContainer 
+
+invoke-pester .\tests\Deploy.Tests.ps1

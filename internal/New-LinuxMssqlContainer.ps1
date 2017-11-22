@@ -39,7 +39,9 @@ Author: Mark Allison
     Process
     {
         if ((Get-Module posh-ssh).Count -eq 0) {
-            Install-Module posh-ssh -Scope CurrentUser
+            Get-PackageSource -Name PSGallery | Set-PackageSource -Trusted
+            Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+            Install-Module posh-ssh -Scope CurrentUser -Force
         }
 
         $credential = New-Object System.Management.Automation.PSCredential ($DockerUserName, (New-Object System.Security.SecureString))
