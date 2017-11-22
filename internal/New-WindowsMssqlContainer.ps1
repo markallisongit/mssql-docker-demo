@@ -31,10 +31,12 @@ Author: Mark Allison
     Process
     {
         $ContainerPort = $StartPortRange
+        $ip = (Resolve-DnsName -Name $DockerHost).IPAddress
         Write-Information "Start range for port scan: $StartPortRange"
         do {
-            Write-Verbose "Checking if port $ContainerPort is in use..."
-            $InUse = (Test-NetConnection -ComputerName $DockerHost -Port $ContainerPort -WarningAction 'SilentlyContinue').TcpTestSucceeded
+            
+            $InUse = Test-TcpPort -ip  $ip -port $ContainerPort -ErrorAction SilentlyContinue           
+            # $InUse = (Test-NetConnection -ComputerName $DockerHost -Port $ContainerPort -WarningAction 'SilentlyContinue').TcpTestSucceeded
             if($InUse) {
                 $ContainerPort++
             }    

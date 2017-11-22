@@ -12,7 +12,7 @@ $output = New-MssqlContainer -DockerHost $DockerHost -SaPassword $SaPassword -Co
 
 $output.ContainerPort
 
-Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50003' -ContainerType Windows
+Remove-MssqlContainer -DockerHost $DockerHost -ContainerName 'mssql-50000' -ContainerType Windows
 Invoke-Command -ComputerName $DockerHost {& docker ps -a}
 
 
